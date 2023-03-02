@@ -22,7 +22,6 @@ class FilmControllerTest {
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), 120L);
         filmController.addFilm(film);
-        assertNotNull(filmController.getFilmList(), "Список фильмов пуст");
         assertEquals(1, filmController.getFilmList().size(), "Список фильмов пуст");
 
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
