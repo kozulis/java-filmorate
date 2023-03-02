@@ -22,7 +22,7 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         log.debug("Добавление фильма {} ", film);
-        checkFilmDate(film);
+        checkFilm(film);
         film.setId(filmId++);
         films.put(film.getId(), film);
         return film;
@@ -35,7 +35,7 @@ public class FilmController {
             log.error("Фильм с id {} не существует", film.getId());
             throw new ValidationException("Фильм не найден, невозможно обновить данные фильма.");
         }
-        checkFilmDate(film);
+        checkFilm(film);
         films.put(film.getId(), film);
         return film;
     }
@@ -45,11 +45,22 @@ public class FilmController {
         return films.values();
     }
 
-    public void checkFilmDate(Film film) {
+    public void checkFilm(Film film) {
+        if (film.getDescription().length() > 200) {
+            log.error("Описание фильма не должно превышать 200 символов.");
+            throw new ValidationException("Описание фильма не должно превышать 200 символов.");
+        }
+        if (film.getName() == null || film.getName().isBlank()) {
+            log.error("Название фильма не должно быть пустым.");
+            throw new ValidationException("Название фильма не должно быть пустым.");
+        }
         if (film.getReleaseDate().isBefore(BIRTHDAY_MOVIES)) {
-            log.error("Дата релиза фильма не может быть раньше 1895.12.28");
+            log.error("Дата релиза фильма не может быть раньше {} ", BIRTHDAY_MOVIES);
             throw new ValidationException("Дата релиза фильма не может быть раньше 1895.12.28");
-
+        }
+        if (film.getDuration() < 0) {
+            log.error("Продолжительность фильма не может быть отрицательным числом.");
+            throw new ValidationException("Продолжительность фильма не может быть отрицательным числом.");
         }
     }
 }
