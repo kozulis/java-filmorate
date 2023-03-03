@@ -40,6 +40,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAll() {
+        log.debug("Получаем список пользователей: {}", users.values());
         return users.values();
     }
 
