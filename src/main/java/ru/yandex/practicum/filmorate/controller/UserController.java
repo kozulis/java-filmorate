@@ -18,9 +18,9 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
+    public User add(@Valid @RequestBody User user) {
         log.debug("Добавление пользователя {} ", user);
-        checkUser(user);
+        check(user);
         user.setId(userId++);
         users.put(user.getId(), user);
         return user;
@@ -33,17 +33,17 @@ public class UserController {
             log.error("Пользователь {} не найден", user);
             throw new ValidationException("Пользователь с таким id не найден.");
         }
-        checkUser(user);
+        check(user);
         users.put(user.getId(), user);
         return user;
     }
 
     @GetMapping
-    public Collection<User> getUsers() {
+    public Collection<User> getAll() {
         return users.values();
     }
 
-    public void checkUser(User user) {
+    public void check(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             log.error("Адрес электронной почты не может быть пустым.");
             throw new ValidationException("Адрес электронной почты не может быть пустым.");

@@ -20,32 +20,33 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
+    public Film add(@Valid @RequestBody Film film) {
         log.debug("Добавление фильма {} ", film);
-        checkFilm(film);
+        check(film);
         film.setId(filmId++);
         films.put(film.getId(), film);
         return film;
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
+    public Film update(@Valid @RequestBody Film film) {
         log.debug("Обновление фильма {} ", film);
         if (!films.containsKey(film.getId())) {
             log.error("Фильм с id {} не существует", film.getId());
             throw new ValidationException("Фильм не найден, невозможно обновить данные фильма.");
         }
-        checkFilm(film);
+        check(film);
         films.put(film.getId(), film);
         return film;
     }
 
     @GetMapping
-    public Collection<Film> getFilmList() {
+    public Collection<Film> getAll() {
+        log.debug("Получаем список фильмов {} ", films.values());
         return films.values();
     }
 
-    public void checkFilm(Film film) {
+    public void check(Film film) {
         if (film.getDescription().length() > 200) {
             log.error("Описание фильма не должно превышать 200 символов.");
             throw new ValidationException("Описание фильма не должно превышать 200 символов.");

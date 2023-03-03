@@ -21,23 +21,23 @@ class FilmControllerTest {
     void shouldAddFilm() {
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), 120L);
-        filmController.addFilm(film);
-        assertEquals(1, filmController.getFilmList().size(), "Список фильмов пуст");
+        filmController.add(film);
+        assertEquals(1, filmController.getAll().size(), "Список фильмов пуст");
 
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
                 LocalDate.of(1895, 12, 28), 120L);
-        filmController.addFilm(film);
-        assertEquals(2, filmController.getFilmList().size(), "Список фильмов пуст");
+        filmController.add(film);
+        assertEquals(2, filmController.getAll().size(), "Список фильмов пуст");
     }
 
     @Test
     void shouldNotAddFilmWithEmptyOrNullName() {
         film = new Film(null, "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), 120L);
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.add(film));
         film = new Film("", "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), 120L);
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.add(film));
     }
 
     @Test
@@ -48,33 +48,33 @@ class FilmControllerTest {
                 "оказываются на другой планете, покрытой песками. Герои пытаются найти обратный путь на свою " +
                 "планету, попадая в череду загадочных и необъяснимых событий...",
                 LocalDate.of(1985, 12, 5), 120L);
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.add(film));
     }
 
     @Test
     void shouldNotAddFilmWithWrongReleaseDate() {
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
                 LocalDate.of(1895, 12, 27), 120L);
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.add(film));
     }
 
     @Test
     void shouldNotAddFilmWithNegativeDuration() {
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), -5L);
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.add(film));
     }
 
     @Test
     void shouldUpdateFilm() {
         film = new Film("Кин-Дза-Дза", "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), 120L);
-        filmController.addFilm(film);
+        filmController.add(film);
         Film film1 = new Film("Кин-Дза-Дза Update", "Инопланетные путешествия",
                 LocalDate.of(1985, 12, 5), 120L);
         film1.setId(film.getId());
-        filmController.updateFilm(film1);
-        assertEquals(1, filmController.getFilmList().size(), "Список пустой.");
-        assertTrue(filmController.getFilmList().contains(film1), "Фильм не обновился.");
+        filmController.update(film1);
+        assertEquals(1, filmController.getAll().size(), "Список пустой.");
+        assertTrue(filmController.getAll().contains(film1), "Фильм не обновился.");
     }
 }
