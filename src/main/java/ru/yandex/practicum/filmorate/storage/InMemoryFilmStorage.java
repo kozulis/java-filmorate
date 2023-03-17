@@ -22,7 +22,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
-    public Film add(Film film) {
+    public Film create(Film film) {
         check(film);
         film.setId(filmId++);
         films.put(film.getId(), film);

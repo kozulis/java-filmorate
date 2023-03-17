@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -12,23 +13,29 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage();
+
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @PostMapping
-    public Film add(@Valid @RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         log.debug("Добавление фильма {} ", film);
-        return inMemoryFilmStorage.add(film);
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         log.debug("Обновление фильма {} ", film);
-        return inMemoryFilmStorage.update(film);
+        return filmService.update(film);
     }
 
     @GetMapping
     public Collection<Film> getAll() {
         log.debug("Получаем список фильмов.");
-        return inMemoryFilmStorage.getAll();
+        return filmService.getAll();
     }
 }
