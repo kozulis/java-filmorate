@@ -37,6 +37,12 @@ public class FilmController {
         return filmStorage.getAll();
     }
 
+    @GetMapping("/{id}")
+    public Film getUserById(@PathVariable Integer id) {
+        log.debug("Получаем фильм по id {}.", id);
+        return filmStorage.getFilmById(id);
+    }
+
     @PutMapping("/{id}/like/{userId}")
     public Film addLike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.debug("Пользователь с id {} ставит лайк фильму с id {}", userId, id);
@@ -52,6 +58,7 @@ public class FilmController {
     @GetMapping("/popular")
     public Collection<Film> getMostPopularFilms(
             @RequestParam(defaultValue = "10", required = false) Integer count) {
+        log.debug("Получаем список популярных фильмов.");
         return filmService.getMostPopularFilms(count);
     }
 }

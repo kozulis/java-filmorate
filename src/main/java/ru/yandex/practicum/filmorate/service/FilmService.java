@@ -43,7 +43,7 @@ public class FilmService {
     }
 
     public void userAndFilmValidation(Integer filmId, Integer userId) {
-        if (filmStorage.getAll().contains(getFilmById(filmId))) {
+        if (!filmStorage.getAll().contains(getFilmById(filmId))) {
             log.error("Фильм с id {} не найден", filmId);
             throw new NotFoundException(String.format("Фильм с id %d не найден", filmId));
         }
