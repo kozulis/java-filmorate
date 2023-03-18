@@ -20,7 +20,7 @@ public class User {
     @PastOrPresent
     private LocalDate birthday;
 
-    public Set<Long> friends = new HashSet<>();
+    private Set<Integer> friendIds = new HashSet<>();
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
