@@ -45,6 +45,11 @@ public class InMemoryFilmStorage implements FilmStorage{
         return films.values();
     }
 
+    @Override
+    public Film getFilmById(Integer filmId) {
+        return films.get(filmId);
+    }
+
     public void check(Film film) {
         if (film.getDescription().length() > 200) {
             log.error("Описание фильма не должно превышать 200 символов.");

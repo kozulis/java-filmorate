@@ -19,7 +19,7 @@ public class Film {
     @Positive
     private Long duration;
 
-    public Set<Long> likes = new HashSet<>();
+    private Set<Integer> likes = new HashSet<>();
 
     public Film(String name, String description, LocalDate releaseDate, Long duration) {
         this.name = name;
