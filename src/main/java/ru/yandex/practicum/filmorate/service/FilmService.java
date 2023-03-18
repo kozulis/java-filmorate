@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -24,15 +24,17 @@ public class FilmService {
     }
 
     public Film addLike(Integer filmId, Integer userId) {
-        userAndFilmValidation(filmId, userId);
-        getFilmById(filmId).getLikes().add(userId);
-        return getFilmById(filmId);
+        Film film = getFilmById(filmId);
+        User user = userStorage.getUserById(userId);
+        film.getLikes().add(user.getId());
+        return film;
     }
 
     public Film deleteLike(Integer filmId, Integer userId) {
-        userAndFilmValidation(filmId, userId);
-        getFilmById(filmId).getLikes().remove(userId);
-        return getFilmById(filmId);
+        Film film = getFilmById(filmId);
+        User user = userStorage.getUserById(userId);
+        film.getLikes().remove(user.getId());
+        return film;
     }
 
     public Collection<Film> getMostPopularFilms(Integer count) {
@@ -40,16 +42,5 @@ public class FilmService {
                 .sorted((o1, o2) -> o2.getLikes().size() - o1.getLikes().size())
                 .limit(count)
                 .collect(Collectors.toList());
-    }
-
-    public void userAndFilmValidation(Integer filmId, Integer userId) {
-        if (!filmStorage.getAll().contains(getFilmById(filmId))) {
-            log.error("Фильм с id {} не найден", filmId);
-            throw new NotFoundException(String.format("Фильм с id %d не найден", filmId));
-        }
-        if (!userStorage.getAll().contains(userStorage.getUserById(userId))) {
-            log.error("Пользователь с id {} не найден", userId);
-            throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
     }
 }

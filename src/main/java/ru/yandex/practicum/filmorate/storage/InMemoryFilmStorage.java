@@ -24,7 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film create(Film film) {
-        check(film);
+        checkValidation(film);
         film.setId(filmId++);
         films.put(film.getId(), film);
         return film;
@@ -32,11 +32,8 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film update(Film film) {
-        if (!films.containsKey(film.getId())) {
-            log.error("Фильм с id {} не найден.", film.getId());
-            throw new NotFoundException("Фильм не найден, невозможно обновить данные фильма.");
-        }
-        check(film);
+        checkNotFound(film.getId());
+        checkValidation(film);
         films.put(film.getId(), film);
         return film;
     }
@@ -48,14 +45,11 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film getFilmById(Integer filmId) {
-        if (!films.containsKey(filmId)) {
-            log.error("Фильм с id {} не существует", filmId);
-            throw new NotFoundException(String.format("Фильм с id %d не найден", filmId));
-        }
+        checkNotFound(filmId);
         return films.get(filmId);
     }
 
-    public void check(Film film) {
+    public void checkValidation(Film film) {
         if (film.getDescription().length() > 200) {
             log.error("Описание фильма не должно превышать 200 символов.");
             throw new ValidationException("Описание фильма не должно превышать 200 символов.");
@@ -71,6 +65,13 @@ public class InMemoryFilmStorage implements FilmStorage{
         if (film.getDuration() < 0) {
             log.error("Продолжительность фильма не может быть отрицательным числом.");
             throw new ValidationException("Продолжительность фильма не может быть отрицательным числом.");
+        }
+    }
+
+    public void checkNotFound(Integer filmId) {
+        if (!films.containsKey(filmId)) {
+            log.error("Фильм с id {} не существует", filmId);
+            throw new NotFoundException(String.format("Фильм с id %d не найден", filmId));
         }
     }
 }
