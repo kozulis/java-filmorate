@@ -48,7 +48,7 @@ public class InMemoryUserStorage implements UserStorage{
         return users.get(userId);
     }
 
-    public void checkValidation(User user) {
+    private void checkValidation(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             log.error("Адрес электронной почты не может быть пустым.");
             throw new ValidationException("Адрес электронной почты не может быть пустым.");
@@ -70,7 +70,7 @@ public class InMemoryUserStorage implements UserStorage{
         }
     }
 
-    public void checkNotFound(Integer userId) {
+    private void checkNotFound(Integer userId) {
         if (!users.containsKey(userId)) {
             log.error("Пользователь с id {} не найден.", userId);
             throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));

@@ -49,7 +49,7 @@ public class InMemoryFilmStorage implements FilmStorage{
         return films.get(filmId);
     }
 
-    public void checkValidation(Film film) {
+    private void checkValidation(Film film) {
         if (film.getDescription().length() > 200) {
             log.error("Описание фильма не должно превышать 200 символов.");
             throw new ValidationException("Описание фильма не должно превышать 200 символов.");
@@ -68,7 +68,7 @@ public class InMemoryFilmStorage implements FilmStorage{
         }
     }
 
-    public void checkNotFound(Integer filmId) {
+    private void checkNotFound(Integer filmId) {
         if (!films.containsKey(filmId)) {
             log.error("Фильм с id {} не существует", filmId);
             throw new NotFoundException(String.format("Фильм с id %d не найден", filmId));
