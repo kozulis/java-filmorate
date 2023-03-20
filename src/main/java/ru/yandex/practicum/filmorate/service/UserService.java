@@ -17,6 +17,18 @@ public class UserService {
 
     private final UserStorage userStorage;
 
+    public User create(User user) {
+        return userStorage.create(user);
+    }
+
+    public User update(User user) {
+        return userStorage.update(user);
+    }
+
+    public Collection<User> getAll() {
+        return userStorage.getAll();
+    }
+
     public User getUserById(Integer userId) {
         return userStorage.getUserById(userId);
     }
