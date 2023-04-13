@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -6,13 +6,18 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
-@Component
-public class InMemoryUserStorage implements UserStorage{
+@Component("inMemoryUserStorage")
+public class InMemoryUserStorage implements UserStorage {
 
     private int userId = 1;
 
@@ -45,6 +50,47 @@ public class InMemoryUserStorage implements UserStorage{
         checkNotFound(userId);
         return users.get(userId);
     }
+
+    @Override
+    public User addFriend(Integer userId, Integer friendId) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        user.getFriendIds().add(friendId);
+        friend.getFriendIds().add(userId);
+        return getUserById(friendId);
+    }
+
+    @Override
+    public User deleteFriend(Integer userId, Integer friendId) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        user.getFriendIds().remove(friendId);
+        friend.getFriendIds().remove(userId);
+        return getUserById(friendId);
+    }
+
+    @Override
+    public Collection<User> getFriends(Integer userId) {
+        User user = getUserById(userId);
+        return user.getFriendIds().stream()
+                .map(this::getUserById)
+//                .map(userStorage::getUserById)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<User> getCommonFriends(Integer userId, Integer otherId) {
+        User user = getUserById(userId);
+        User otherUser = getUserById(otherId);
+        Set<Integer> userFriends = user.getFriendIds();
+        Set<Integer> otherFriends = otherUser.getFriendIds();
+        return userFriends.stream()
+                .filter(otherFriends::contains)
+                .map(this::getUserById)
+//                .map(userStorage::getUserById)
+                .collect(Collectors.toList());
+    }
+
 
     private void checkValidation(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {

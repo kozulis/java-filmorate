@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,9 +25,9 @@ public class Film {
 
     private Set<Integer> likes = new HashSet<>();
 
-//    private Collection<Genre> genres; //TODO
+    private Collection<Genre> genres;
 
-//    private Mpa mpa; // TODO
+    private Mpa mpa;
 
     public Film(String name, String description, LocalDate releaseDate, Long duration) {
         this.name = name;

@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS mpa_ratings (
     mpa_rating_id INTEGER PRIMARY KEY NOT NULL,
-    name varchar(100) NOT NULL
+    name varchar(100) NOT NULL,
+    description varchar(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS films (
@@ -22,9 +23,8 @@ CREATE TABLE IF NOT EXISTS films (
 
 
 CREATE TABLE IF NOT EXISTS genres (
-    genre_id INTEGER PRIMARY KEY NOT NULL,
-    name varchar(25) NOT NULL,
-    description varchar(100) NOT NULL
+    genre_id INTEGER PRIMARY KEY NOT NULL ,
+    name varchar(25) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS film_genres (
