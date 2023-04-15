@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS films (
     name varchar(100) NOT NULL ,
     description varchar(200),
     release_date DATE NOT NULL,
-    duration INTEGER,
+    duration INTEGER CHECK(duration > 0),
     mpa_id INTEGER REFERENCES mpa_ratings (mpa_rating_id)
 );
 

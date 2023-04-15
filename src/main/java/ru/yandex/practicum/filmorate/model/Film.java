@@ -10,7 +10,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -27,16 +26,34 @@ public class Film {
     @Positive
     private Long duration;
 
-    private Set<Integer> likes = new HashSet<>();
+    private Mpa mpa;
+
+    private Set<Integer> likes;
 
     private Collection<Genre> genres;
 
-    private Mpa mpa;
 
     public Film(String name, String description, LocalDate releaseDate, Long duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, Long duration, Mpa mpa) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+    }
+
+    public Film(Integer id, String name, String description, LocalDate releaseDate, Long duration, Mpa mpa) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
     }
 }

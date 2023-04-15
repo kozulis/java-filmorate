@@ -51,7 +51,7 @@ public class UserDbStorage implements UserStorage {
                 user.getBirthday(), user.getId());
         if (updateUser == 0) {
             log.error("Данные пользователя с id {} не обновлены.", user.getId());
-            throw new NotFoundException(String.format("Данные пользователя с %d не обновлены.", user.getId()));
+            throw new NotFoundException(String.format("Данные пользователя с id %d не обновлены.", user.getId()));
         }
         return user;
     }
