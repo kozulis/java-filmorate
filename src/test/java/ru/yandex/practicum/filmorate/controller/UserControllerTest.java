@@ -22,7 +22,7 @@ class UserControllerTest {
 
     @Test
     void shouldAddUser() {
-        user = new User("somewhere@something.com", "goga", "Гоша",
+        user = new User("goga", "Гоша", "somewhere@something.com",
                 LocalDate.of(1995, 5, 3));
         userController.create(user);
         assertEquals(1, userController.getAll().size());
@@ -66,7 +66,7 @@ class UserControllerTest {
 
     @Test
     void shouldAddUserWithEmptyName() {
-        user = new User("somewhere@something.com", "goga", null,
+        user = new User("goga", null, "somewhere@something.com",
                 LocalDate.of(1995, 5, 3));
         userController.create(user);
         assertEquals(1, userController.getAll().size());
@@ -83,11 +83,11 @@ class UserControllerTest {
 
     @Test
     void shouldUpdateUser() {
-        user = new User("somewhere@something.com", "goga", "Гоша",
+        user = new User("goga", "Гоша", "somewhere@something.com",
                 LocalDate.of(1995, 5, 3));
         userController.create(user);
 
-        User user1 = new User("somewhere@something.com", "gogaUpdate", "Гоша",
+        User user1 = new User("gogaUpdate", "Гоша", "somewhere@something.com",
                 LocalDate.of(1995, 5, 3));
         user1.setId(user.getId());
         userController.update(user1);

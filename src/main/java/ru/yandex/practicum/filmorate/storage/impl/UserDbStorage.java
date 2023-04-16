@@ -15,8 +15,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Repository("userDbStorage")
@@ -59,15 +58,29 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> getAll() {
         String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, this::mapRowToUser);
+        List<User> users = jdbcTemplate.query(sql, this::mapRowToUser);
+        for (User user : users) {
+            user.setFriendIds(getFriendsIds(user.getId()));
+
+        }
+        return users;
     }
 
     @Override
     public User getUserById(Integer userId) {
         checkUserNotFound(userId);
         String sql = "SELECT * FROM users WHERE user_id = ?";
-        return jdbcTemplate.queryForObject(sql, this::mapRowToUser, userId);
+        User user = jdbcTemplate.queryForObject(sql, this::mapRowToUser, userId);
+        user.setFriendIds(getFriendsIds(user.getId()));
+        return user;
     }
+
+    public Set<Integer> getFriendsIds(Integer userId) {
+        String sql = "SELECT friend_id FROM friends WHERE user_id = ? AND status_id = 1";
+        List<Integer> ids = jdbcTemplate.queryForList(sql, Integer.class, userId);
+        return new HashSet<>(ids);
+    }
+
 
     @Override
     public User addFriend(Integer userId, Integer friendId) {
@@ -108,6 +121,13 @@ public class UserDbStorage implements UserStorage {
                 "WHERE fr.user_id = ? AND fr.friend_id IN " +
                 "(SELECT friend_id FROM friends WHERE user_id = ?)";
         return jdbcTemplate.query(sql, this::mapRowToUser, userId, otherId);
+    }
+
+    public void deleteUser(Integer userId) {
+        checkUserNotFound(userId);
+        String sql = "DELETE FROM users WHERE user_id = ?;";
+        jdbcTemplate.update(sql, userId);
+        log.debug("Пользователь с id {} удален.", userId);
     }
 
     private void checkUserNameNotEmpty(User user) {

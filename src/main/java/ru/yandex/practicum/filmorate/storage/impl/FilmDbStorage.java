@@ -81,8 +81,8 @@ public class FilmDbStorage implements FilmStorage {
                 "JOIN mpa_ratings AS m ON f.mpa_id = m.mpa_rating_id";
         List<Film> films = jdbcTemplate.query(sql, this::mapRowToFilm);
         for (Film film : films) {
-            film.setGenres(getGenresOfFilm(film.getId()));
-            film.setLikes(getLikesOfFilm(film.getId()));
+            film.setGenres(getFilmGenres(film.getId()));
+            film.setLikes(getFilmLikes(film.getId()));
         }
         return films;
     }
@@ -96,8 +96,8 @@ public class FilmDbStorage implements FilmStorage {
                 "JOIN mpa_ratings AS m ON f.mpa_id = m.mpa_rating_id " +
                 "WHERE film_id = ?";
         Film film = jdbcTemplate.queryForObject(sql, this::mapRowToFilm, filmId);
-        film.setGenres(getGenresOfFilm(filmId));
-        film.setLikes(getLikesOfFilm(filmId));
+        film.setGenres(getFilmGenres(filmId));
+        film.setLikes(getFilmLikes(filmId));
         return film;
     }
 
@@ -113,8 +113,8 @@ public class FilmDbStorage implements FilmStorage {
                 "LIMIT ?";
         List<Film> films = jdbcTemplate.query(sql, this::mapRowToFilm, count);
         for (Film film : films) {
-            film.setGenres(getGenresOfFilm(film.getId()));
-            film.setLikes(getLikesOfFilm(film.getId()));
+            film.setGenres(getFilmGenres(film.getId()));
+            film.setLikes(getFilmLikes(film.getId()));
         }
         return films;
     }
@@ -137,7 +137,7 @@ public class FilmDbStorage implements FilmStorage {
         return getFilmById(filmId);
     }
 
-    public Set<Integer> getLikesOfFilm(Integer filmId) {
+    public Set<Integer> getFilmLikes(Integer filmId) {
         checkFilmNotFound(filmId);
         String sql = "SELECT user_id FROM film_user_likes WHERE film_id = ?";
         List<Integer> filmLikes = jdbcTemplate.queryForList(sql, Integer.class, filmId);
@@ -161,7 +161,7 @@ public class FilmDbStorage implements FilmStorage {
         addGenresToFilm(film);
     }
 
-    private Collection<Genre> getGenresOfFilm(Integer filmId) {
+    private Collection<Genre> getFilmGenres(Integer filmId) {
         String sql = "SELECT * FROM genres AS g " +
                 "JOIN film_genres AS fg ON g.genre_id = fg.genre_id " +
                 "WHERE film_id = ?";
