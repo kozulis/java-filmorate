@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaDao;
+import ru.yandex.practicum.filmorate.storage.impl.sql.Constants;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,19 +24,16 @@ public class MpaDaoImpl implements MpaDao {
     @Override
     public Mpa getMpaById(Integer mpaId) {
         checkMpaNotFound(mpaId);
-        String sql = "SELECT * FROM mpa_ratings WHERE mpa_rating_id = ?";
-        return jdbcTemplate.queryForObject(sql, this::mpaRowMapper, mpaId);
+        return jdbcTemplate.queryForObject(Constants.SELECT_MPA_BY_ID, this::mpaRowMapper, mpaId);
     }
 
     @Override
     public Collection<Mpa> getAllMpa() {
-        String sql = "SELECT * FROM mpa_ratings";
-        return jdbcTemplate.query(sql, this::mpaRowMapper);
+        return jdbcTemplate.query(Constants.SELECT_MPA, this::mpaRowMapper);
     }
 
     private void checkMpaNotFound(int mpaId) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM mpa_ratings WHERE mpa_rating_id = ?)";
-        if (Objects.equals(jdbcTemplate.queryForObject(sql, Boolean.class, mpaId), false)) {
+        if (Objects.equals(jdbcTemplate.queryForObject(Constants.CHECK_MPA_EXIST, Boolean.class, mpaId), false)) {
             log.error("Рейтинг MPA с id {} не найден.", mpaId);
             throw new NotFoundException(String.format("Рейтинг с id %d не найден", mpaId));
         }

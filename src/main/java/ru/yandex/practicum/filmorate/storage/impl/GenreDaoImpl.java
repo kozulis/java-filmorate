@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreDao;
+import ru.yandex.practicum.filmorate.storage.impl.sql.Constants;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,19 +24,16 @@ public class GenreDaoImpl implements GenreDao {
     @Override
     public Genre getGenreById(Integer genreId) {
         checkGenreNotFound(genreId);
-        String sql = "SELECT * FROM genres WHERE genre_id = ?";
-        return jdbcTemplate.queryForObject(sql, this::genreRowMapper, genreId);
+        return jdbcTemplate.queryForObject(Constants.SELECT_GENRE_BY_ID, this::genreRowMapper, genreId);
     }
 
     @Override
     public Collection<Genre> getAllGenres() {
-        String sql = "SELECT * FROM genres";
-        return jdbcTemplate.query(sql, this::genreRowMapper);
+        return jdbcTemplate.query(Constants.SELECT_GENRES, this::genreRowMapper);
     }
 
     private void checkGenreNotFound(int genreId) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM genres WHERE genre_id = ?)";
-        if (Objects.equals(jdbcTemplate.queryForObject(sql, Boolean.class, genreId), false)) {
+        if (Objects.equals(jdbcTemplate.queryForObject(Constants.SELECT_GENRE_EXIST, Boolean.class, genreId), false)) {
             log.error("Жанр с id {} не найден.", genreId);
             throw new NotFoundException(String.format("Жанр с id %d не найден", genreId));
         }

@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.sql.Constants;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -27,10 +28,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User create(User user) {
         checkUserNameNotEmpty(user);
-        String sql = "INSERT INTO users (login, name, email, birthday) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"user_id"});
+            PreparedStatement stmt = connection.prepareStatement(Constants.INSERT_USER, new String[]{"user_id"});
             stmt.setString(1, user.getLogin());
             stmt.setString(2, user.getName());
             stmt.setString(3, user.getEmail());
@@ -43,10 +43,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        String sql = "UPDATE users SET login = ?, name = ?, email = ?, birthday = ? WHERE user_id = ?";
         checkUserNotFound(user.getId());
         checkUserNameNotEmpty(user);
-        int updateUser = jdbcTemplate.update(sql, user.getLogin(), user.getName(), user.getEmail(),
+        int updateUser = jdbcTemplate.update(Constants.UPDATE_USER, user.getLogin(), user.getName(), user.getEmail(),
                 user.getBirthday(), user.getId());
         if (updateUser == 0) {
             log.error("Данные пользователя с id {} не обновлены.", user.getId());
@@ -57,8 +56,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getAll() {
-        String sql = "SELECT * FROM users";
-        List<User> users = jdbcTemplate.query(sql, this::mapRowToUser);
+        List<User> users = jdbcTemplate.query(Constants.SELECT_ALL_USERS, this::mapRowToUser);
         for (User user : users) {
             user.setFriendIds(getFriendsIds(user.getId()));
 
@@ -69,15 +67,13 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUserById(Integer userId) {
         checkUserNotFound(userId);
-        String sql = "SELECT * FROM users WHERE user_id = ?";
-        User user = jdbcTemplate.queryForObject(sql, this::mapRowToUser, userId);
+        User user = jdbcTemplate.queryForObject(Constants.SELECT_USER_BY_ID, this::mapRowToUser, userId);
         user.setFriendIds(getFriendsIds(user.getId()));
         return user;
     }
 
     public Set<Integer> getFriendsIds(Integer userId) {
-        String sql = "SELECT friend_id FROM friends WHERE user_id = ? AND status_id = 1";
-        List<Integer> ids = jdbcTemplate.queryForList(sql, Integer.class, userId);
+        List<Integer> ids = jdbcTemplate.queryForList(Constants.SELECT_FRIENDS_ID, Integer.class, userId);
         return new HashSet<>(ids);
     }
 
@@ -90,8 +86,7 @@ public class UserDbStorage implements UserStorage {
             log.error("Ошибка добавления в список друзей. Id пользователей не должны совпадать.");
             throw new ValidationException("Id пользователей не должны совпадать.");
         }
-        String sql = "INSERT INTO friends (user_id, friend_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, userId, friendId);
+        jdbcTemplate.update(Constants.INSERT_FRIEND, userId, friendId);
         return getUserById(friendId);
     }
 
@@ -99,28 +94,21 @@ public class UserDbStorage implements UserStorage {
     public User deleteFriend(Integer userId, Integer friendId) {
         checkUserNotFound(userId);
         checkUserNotFound(friendId);
-        String sql = "DELETE FROM friends WHERE user_id = ? AND friend_id = ? AND status_id = 1";
-        jdbcTemplate.update(sql, userId, friendId);
+        jdbcTemplate.update(Constants.DELETE_FRIEND, userId, friendId);
         return getUserById(friendId);
     }
 
     @Override
     public Collection<User> getFriends(Integer userId) {
         checkUserNotFound(userId);
-        String sql = "SELECT * FROM users WHERE user_id IN " +
-                "(SELECT friend_id FROM friends WHERE user_id = ? AND status_id = 1)";
-        return jdbcTemplate.query(sql, this::mapRowToUser, userId);
+        return jdbcTemplate.query(Constants.SELECT_FRIENDS, this::mapRowToUser, userId);
     }
 
     @Override
     public Collection<User> getCommonFriends(Integer userId, Integer otherId) {
         checkUserNotFound(userId);
         checkUserNotFound(otherId);
-        String sql = "SELECT u.* FROM friends AS fr " +
-                "JOIN users AS u ON fr.friend_id = u.user_id " +
-                "WHERE fr.user_id = ? AND fr.friend_id IN " +
-                "(SELECT friend_id FROM friends WHERE user_id = ?)";
-        return jdbcTemplate.query(sql, this::mapRowToUser, userId, otherId);
+        return jdbcTemplate.query(Constants.SELECT_COMMON_FRIENDS, this::mapRowToUser, userId, otherId);
     }
 
     public void deleteUser(Integer userId) {
