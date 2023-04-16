@@ -124,7 +124,7 @@ class FilmoRateApplicationTests {
     //Test filmDbStorage
 
     @Test
-    void create() {
+    void ShouldCreateFilm() {
         filmDbStorage.create(film);
         assertThat(filmDbStorage.getFilmById(film.getId()))
                 .hasFieldOrPropertyWithValue("name", "film6");
@@ -132,7 +132,7 @@ class FilmoRateApplicationTests {
 
     //
     @Test
-    void update() {
+    void ShouldUpdateFilm() {
         filmDbStorage.update(updateFilm);
         assertThat(filmDbStorage.getFilmById(updateFilm.getId()).getName())
                 .isEqualTo(updateFilm.getName());
@@ -142,7 +142,7 @@ class FilmoRateApplicationTests {
 
 
     @Test
-    void getAll() {
+    void ShouldGetAllFilms() {
         Collection<Film> films = filmDbStorage.getAll();
         assertThat(films).isNotEmpty();
         assertThat(new ArrayList<>(films).get(2)
@@ -150,7 +150,7 @@ class FilmoRateApplicationTests {
     }
 
     @Test
-    void getFilmById() {
+    void ShouldGetFilmById() {
         Film film1 = filmDbStorage.getFilmById(1);
         assertThat(film1.getId()).isEqualTo(1);
         assertThat(film1).hasFieldOrPropertyWithValue("id", 1);
@@ -158,7 +158,7 @@ class FilmoRateApplicationTests {
     }
 
     @Test
-    void getMostPopularFilms() {
+    void ShouldGetMostPopularFilms() {
         Collection<Film> popularFilms = filmDbStorage.getMostPopularFilms(1);
         assertThat(popularFilms.size()).isEqualTo(1);
         assertThat(new ArrayList<>(popularFilms).get(0))
@@ -166,13 +166,13 @@ class FilmoRateApplicationTests {
     }
 
     @Test
-    void addLike() {
+    void ShouldAddLikeToFilm() {
         Film film1 = filmDbStorage.addLike(2, 3);
         assertThat(film1.getLikes().size()).isEqualTo(2);
     }
 
     @Test
-    void deleteLike() {
+    void ShouldDeleteLike() {
         Film film1 = filmDbStorage.deleteLike(3, 3);
         assertThat(film1.getLikes().size()).isEqualTo(0);
     }
@@ -180,14 +180,14 @@ class FilmoRateApplicationTests {
     //Test MpaDaoImpl
 
     @Test
-    void getMpaById() {
+    void ShouldGetMpaById() {
         mpaDaoImpl.getMpaById(3);
         assertThat(mpaDaoImpl.getMpaById(3))
                 .hasFieldOrPropertyWithValue("description", "Детям до 13 лет просмотр не желателен");
     }
 
     @Test
-    void getAllMpa() {
+    void ShouldGetAllMpa() {
         Collection<Mpa> mpaList = mpaDaoImpl.getAllMpa();
         assertThat(mpaList.size()).isEqualTo(5);
     }
@@ -195,13 +195,13 @@ class FilmoRateApplicationTests {
     //Test GenreDaoImpl
 
     @Test
-    void getGenreById() {
+    void ShouldGetGenreFilmById() {
         assertThat(genreDaoImpl.getGenreById(4))
                 .hasFieldOrPropertyWithValue("name", "Триллер");
     }
 
     @Test
-    void getAllGenres() {
+    void getAllGenresOfFilm() {
         Collection<Genre> genresList = genreDaoImpl.getAllGenres();
         assertThat(genresList.size()).isEqualTo(6);
     }
