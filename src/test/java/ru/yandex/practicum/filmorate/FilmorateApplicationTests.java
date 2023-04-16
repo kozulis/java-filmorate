@@ -40,10 +40,10 @@ class FilmoRateApplicationTests {
 
 
     User updateUser = User.builder()
-            .id(6)
-            .login("login6update")
-            .name("name6update")
-            .email("email6update")
+            .id(1)
+            .login("login1update")
+            .name("name1update")
+            .email("email1update")
             .birthday(LocalDate.of(2006, 6, 6))
             .friendIds(Collections.emptySet())
             .build();
@@ -57,9 +57,9 @@ class FilmoRateApplicationTests {
             .build();
 
     Film updateFilm = Film.builder()
-            .id(6)
-            .name("film6update")
-            .description("description6update")
+            .id(1)
+            .name("film1update")
+            .description("description1update")
             .releaseDate(LocalDate.of(2010, 1, 16))
             .duration(60L)
             .mpa(new Mpa(1))
@@ -68,55 +68,55 @@ class FilmoRateApplicationTests {
     //Test userDbStorage
 
     @Test
-    public void ShouldCreateUser() {
+    public void shouldCreateUser() {
         userDbStorage.create(user);
         assertThat(userDbStorage.getUserById(user.getId())).isEqualTo(user);
     }
 
     @Test
-    public void ShouldUpdateUser() {
+    public void shouldUpdateUser() {
         userDbStorage.update(updateUser);
         assertThat(userDbStorage.getUserById(updateUser.getId()).getName())
                 .isEqualTo(updateUser.getName());
     }
 
     @Test
-    public void ShouldGetAllUsers() {
+    public void shouldGetAllUsers() {
         Collection<User> users = userDbStorage.getAll();
         assertThat(users).isNotEmpty();
         assertThat(new ArrayList<>(users).get(2).getName()).isEqualTo("name3");
     }
 
     @Test
-    public void ShouldGetUserById() {
-        User user1 = userDbStorage.getUserById(1);
-        assertThat(user1.getId()).isEqualTo(1);
-        assertThat(user1).hasFieldOrPropertyWithValue("id", 1);
-        assertThat(user1).hasFieldOrPropertyWithValue("login", "login1");
+    public void shouldGetUserById() {
+        User user1 = userDbStorage.getUserById(2);
+        assertThat(user1.getId()).isEqualTo(2);
+        assertThat(user1).hasFieldOrPropertyWithValue("id", 2);
+        assertThat(user1).hasFieldOrPropertyWithValue("login", "login2");
     }
 
     @Test
-    public void ShouldAddFriend() {
+    public void shouldAddFriend() {
         userDbStorage.addFriend(3, 2);
         Collection<User> friends = userDbStorage.getFriends(3);
         assertThat(friends).isNotEmpty().hasSize(2);
     }
 
     @Test
-    public void ShouldDeleteFriend() {
+    public void shouldDeleteFriend() {
         userDbStorage.deleteFriend(4, 2);
         Collection<User> friends = userDbStorage.getFriends(4);
         assertThat(friends).hasSize(0);
     }
 
     @Test
-    public void ShouldGetFriends() {
+    public void shouldGetFriends() {
         Collection<User> friends = userDbStorage.getFriends(1);
         assertThat(friends).hasSize(2);
     }
 
     @Test
-    public void ShouldGetCommonFriends() {
+    public void shouldGetCommonFriends() {
         Collection<User> commonFriends = userDbStorage.getCommonFriends(1, 2);
         assertThat(commonFriends).hasSize(1);
     }
@@ -124,7 +124,7 @@ class FilmoRateApplicationTests {
     //Test filmDbStorage
 
     @Test
-    void ShouldCreateFilm() {
+    void shouldCreateFilm() {
         filmDbStorage.create(film);
         assertThat(filmDbStorage.getFilmById(film.getId()))
                 .hasFieldOrPropertyWithValue("name", "film6");
@@ -132,17 +132,17 @@ class FilmoRateApplicationTests {
 
     //
     @Test
-    void ShouldUpdateFilm() {
+    void shouldUpdateFilm() {
         filmDbStorage.update(updateFilm);
         assertThat(filmDbStorage.getFilmById(updateFilm.getId()).getName())
                 .isEqualTo(updateFilm.getName());
         assertThat(filmDbStorage.getFilmById(updateFilm.getId()))
-                .hasFieldOrPropertyWithValue("name", "film6update");
+                .hasFieldOrPropertyWithValue("name", "film1update");
     }
 
 
     @Test
-    void ShouldGetAllFilms() {
+    void shouldGetAllFilms() {
         Collection<Film> films = filmDbStorage.getAll();
         assertThat(films).isNotEmpty();
         assertThat(new ArrayList<>(films).get(2)
@@ -150,29 +150,29 @@ class FilmoRateApplicationTests {
     }
 
     @Test
-    void ShouldGetFilmById() {
+    void shouldGetFilmById() {
         Film film1 = filmDbStorage.getFilmById(1);
         assertThat(film1.getId()).isEqualTo(1);
         assertThat(film1).hasFieldOrPropertyWithValue("id", 1);
-        assertThat(film1).hasFieldOrPropertyWithValue("name", "film1");
+        assertThat(film1).hasFieldOrPropertyWithValue("name", "film1update");
     }
 
     @Test
-    void ShouldGetMostPopularFilms() {
+    void shouldGetMostPopularFilms() {
         Collection<Film> popularFilms = filmDbStorage.getMostPopularFilms(1);
         assertThat(popularFilms.size()).isEqualTo(1);
         assertThat(new ArrayList<>(popularFilms).get(0))
-                .hasFieldOrPropertyWithValue("name", "film1");
+                .hasFieldOrPropertyWithValue("name", "film1update");
     }
 
     @Test
-    void ShouldAddLikeToFilm() {
+    void shouldAddLikeToFilm() {
         Film film1 = filmDbStorage.addLike(2, 3);
         assertThat(film1.getLikes().size()).isEqualTo(2);
     }
 
     @Test
-    void ShouldDeleteLike() {
+    void shouldDeleteLike() {
         Film film1 = filmDbStorage.deleteLike(3, 3);
         assertThat(film1.getLikes().size()).isEqualTo(0);
     }
@@ -180,14 +180,14 @@ class FilmoRateApplicationTests {
     //Test MpaDaoImpl
 
     @Test
-    void ShouldGetMpaById() {
+    void shouldGetMpaById() {
         mpaDaoImpl.getMpaById(3);
         assertThat(mpaDaoImpl.getMpaById(3))
                 .hasFieldOrPropertyWithValue("description", "Детям до 13 лет просмотр не желателен");
     }
 
     @Test
-    void ShouldGetAllMpa() {
+    void shouldGetAllMpa() {
         Collection<Mpa> mpaList = mpaDaoImpl.getAllMpa();
         assertThat(mpaList.size()).isEqualTo(5);
     }
@@ -195,7 +195,7 @@ class FilmoRateApplicationTests {
     //Test GenreDaoImpl
 
     @Test
-    void ShouldGetGenreFilmById() {
+    void shouldGetGenreFilmById() {
         assertThat(genreDaoImpl.getGenreById(4))
                 .hasFieldOrPropertyWithValue("name", "Триллер");
     }
