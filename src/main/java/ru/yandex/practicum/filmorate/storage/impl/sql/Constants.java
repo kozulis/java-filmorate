@@ -28,8 +28,8 @@ public class Constants {
     public static final String INSERT_FILM = "INSERT INTO films (name, description, release_date, duration, mpa_id) " +
             "VALUES (?, ?, ?, ?, ?)";
     public static final String INSERT_LIKE_TO_FILM = "INSERT INTO film_user_likes (film_id, user_id) VALUES (?, ?)";
-    public static final String INSERT_FILM_GENRE = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-    public static final String INSERT_FILM_GENRES = "SELECT * FROM genres AS g " +
+    public static final String INSERT_GENRE_TO_FILM = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
+    public static final String SELECT_FILM_GENRES = "SELECT * FROM genres AS g " +
             "JOIN film_genres AS fg ON g.genre_id = fg.genre_id " +
             "WHERE film_id = ?";
     public static final String SELECT_ALL_FILMS = "SELECT f.*, m.mpa_rating_id, m.name AS mpa_name, " +

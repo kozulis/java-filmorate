@@ -116,14 +116,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public Set<Integer> getFilmLikes(Integer filmId) {
-        checkFilmNotFound(filmId);
         List<Integer> filmLikes = jdbcTemplate.queryForList(Constants.SELECT_LIKE_FILM, Integer.class, filmId);
         return new HashSet<>(filmLikes);
     }
 
     public void addGenresToFilm(Film film) {
         for (Genre genre : film.getGenres()) {
-            jdbcTemplate.update(Constants.INSERT_FILM_GENRE, film.getId(), genre.getId());
+            jdbcTemplate.update(Constants.INSERT_GENRE_TO_FILM, film.getId(), genre.getId());
         }
     }
 
@@ -137,7 +136,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Collection<Genre> getFilmGenres(Integer filmId) {
-        return jdbcTemplate.query(Constants.INSERT_FILM_GENRES, this::mapRowToGenre, filmId);
+        return jdbcTemplate.query(Constants.SELECT_FILM_GENRES, this::mapRowToGenre, filmId);
     }
 
     private void checkFilmDate(Film film) {
