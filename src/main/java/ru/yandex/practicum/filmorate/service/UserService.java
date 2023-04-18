@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -59,7 +58,6 @@ public class UserService {
         userStorage.deleteUserById(userId);
     }
 
-    @Transactional
     public void addFriend(Integer userId, Integer friendId) {
         userStorage.getUserById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с id %d не найден", userId)));
@@ -75,7 +73,6 @@ public class UserService {
         }
     }
 
-    @Transactional
     public void deleteFriend(Integer userId, Integer friendId) {
         userStorage.getUserById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с id %d не найден", userId)));
@@ -84,14 +81,12 @@ public class UserService {
         friendsService.deleteFriend(userId, friendId);
     }
 
-    @Transactional
     public Collection<User> getFriendsByUserId(Integer userId) {
         userStorage.getUserById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с id %d не найден", userId)));
         return friendsService.getFriendsByUserId(userId);
     }
 
-    @Transactional
     public Collection<User> getCommonFriends(Integer userId, Integer otherId) {
         userStorage.getUserById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с id %d не найден", userId)));
