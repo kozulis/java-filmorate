@@ -11,7 +11,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Set;
 
 @Builder
 @Data
@@ -30,7 +29,7 @@ public class Film {
 
     private Mpa mpa;
 
-    private Set<Integer> likes;
+    private Integer likes;
 
     private Collection<Genre> genres;
 

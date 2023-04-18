@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -65,11 +66,14 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(Integer userId) {
-        checkUserNotFound(userId);
-        User user = jdbcTemplate.queryForObject(Constants.SELECT_USER_BY_ID, this::mapRowToUser, userId);
-        user.setFriendIds(getFriendsIds(user.getId()));
-        return user;
+    public Optional<User> getUserById(Integer userId) {
+        try {
+            User user = jdbcTemplate.queryForObject(Constants.SELECT_USER_BY_ID, this::mapRowToUser, userId);
+            user.setFriendIds(getFriendsIds(user.getId()));
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Set<Integer> getFriendsIds(Integer userId) {
@@ -79,7 +83,7 @@ public class UserDbStorage implements UserStorage {
 
 
     @Override
-    public User addFriend(Integer userId, Integer friendId) {
+    public void addFriend(Integer userId, Integer friendId) {
         checkUserNotFound(userId);
         checkUserNotFound(friendId);
         if (Objects.equals(userId, friendId)) {
@@ -87,15 +91,13 @@ public class UserDbStorage implements UserStorage {
             throw new ValidationException("Id пользователей не должны совпадать.");
         }
         jdbcTemplate.update(Constants.INSERT_FRIEND, userId, friendId);
-        return getUserById(friendId);
     }
 
     @Override
-    public User deleteFriend(Integer userId, Integer friendId) {
+    public void deleteFriend(Integer userId, Integer friendId) {
         checkUserNotFound(userId);
         checkUserNotFound(friendId);
         jdbcTemplate.update(Constants.DELETE_FRIEND, userId, friendId);
-        return getUserById(friendId);
     }
 
     @Override

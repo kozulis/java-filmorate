@@ -33,7 +33,7 @@ public class Constants {
             "m.description AS mpa_description " +
             "FROM films AS f " +
             "JOIN mpa_ratings AS m ON f.mpa_id = m.mpa_rating_id";
-    public static final String SELECT_LIKE_FILM = "SELECT user_id FROM film_user_likes WHERE film_id = ?";
+    public static final String SELECT_LIKE_FILM = "SELECT COUNT(user_id) FROM film_user_likes WHERE film_id = ?";
     public static final String SELECT_FILM_BY_ID = "SELECT f.*, m.mpa_rating_id, m.name AS mpa_name, " +
             "m.description AS mpa_description " +
             "FROM films AS f " +

@@ -12,7 +12,7 @@ public interface GenreDao {
 
     Collection<Genre> getAllGenres();
 
-    Optional<List<Genre>> findByFilmId(Integer filmId);
+    Optional<List<Genre>> getByFilmId(Integer filmId);
 
     void updateFilmGenres(Integer filmId, Integer genreId);
 

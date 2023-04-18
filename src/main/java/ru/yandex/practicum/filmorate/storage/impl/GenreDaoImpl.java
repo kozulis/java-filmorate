@@ -36,7 +36,7 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public Optional<List<Genre>> findByFilmId(Integer filmId) {
+    public Optional<List<Genre>> getByFilmId(Integer filmId) {
         try {
             List<Genre> genreList = jdbcTemplate.query(Constants.SELECT_GENRE_BY_FILM, this::genreRowMapper, filmId);
             return Optional.of(genreList);
