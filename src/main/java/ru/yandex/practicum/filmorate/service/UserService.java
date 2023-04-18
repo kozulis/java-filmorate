@@ -69,7 +69,6 @@ public class UserService {
             log.error("Ошибка добавления в список друзей. Id пользователей не должны совпадать.");
             throw new ValidationException("Id пользователей не должны совпадать.");
         }
-        //TODO проверить метод или удалить
         Collection<User> friend = friendsService.getFriend(userId, friendId);
         if (friend.isEmpty()) {
             friendsService.addFriend(userId, friendId);

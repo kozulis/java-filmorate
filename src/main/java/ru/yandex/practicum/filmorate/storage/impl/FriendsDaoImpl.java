@@ -27,8 +27,6 @@ public class FriendsDaoImpl implements FriendsDao {
         jdbcTemplate.update(Constants.INSERT_FRIEND, userId, friendId);
     }
 
-
-    //TODO использовать или удалить
     public Set<Integer> getFriendsIds(Integer userId) {
         List<Integer> ids = jdbcTemplate.queryForList(Constants.SELECT_FRIENDS_ID, Integer.class, userId);
         return new HashSet<>(ids);
@@ -61,5 +59,4 @@ public class FriendsDaoImpl implements FriendsDao {
                 resultSet.getString("email"),
                 resultSet.getDate("birthday").toLocalDate());
     }
-
 }

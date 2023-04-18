@@ -87,7 +87,6 @@ public class FilmService {
         return films;
     }
 
-
     private void checkFilmDate(Film film) {
         if (film.getReleaseDate().isBefore(BIRTHDAY_MOVIES)) {
             log.error("Дата релиза фильма не может быть раньше {} ", BIRTHDAY_MOVIES);

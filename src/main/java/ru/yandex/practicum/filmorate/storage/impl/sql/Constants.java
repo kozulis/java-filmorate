@@ -19,7 +19,6 @@ public class Constants {
             "JOIN users AS u ON fr.friend_id = u.user_id " +
             "WHERE fr.user_id = ? AND fr.friend_id IN " +
             "(SELECT friend_id FROM friends WHERE user_id = ?)";
-    public static final String SELECT_USER_EXIST = "SELECT EXISTS(SELECT 1 FROM users WHERE user_id = ?)";
 
     public static final String UPDATE_USER = "UPDATE users SET login = ?, name = ?, email = ?, birthday = ? WHERE user_id = ?";
     public static final String DELETE_FRIEND = "DELETE FROM friends WHERE user_id = ? AND friend_id = ? AND status_id = 1";
@@ -30,7 +29,6 @@ public class Constants {
     public static final String INSERT_FILM = "INSERT INTO films (name, description, release_date, duration, mpa_id) " +
             "VALUES (?, ?, ?, ?, ?)";
     public static final String INSERT_LIKE_TO_FILM = "INSERT INTO film_user_likes (film_id, user_id) VALUES (?, ?)";
-    public static final String INSERT_GENRE_TO_FILM = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
     public static final String SELECT_ALL_FILMS = "SELECT f.*, m.mpa_rating_id, m.name AS mpa_name, " +
             "m.description AS mpa_description " +
             "FROM films AS f " +
@@ -41,15 +39,6 @@ public class Constants {
             "FROM films AS f " +
             "JOIN mpa_ratings AS m ON f.mpa_id = m.mpa_rating_id " +
             "WHERE film_id = ?";
-    public static final String SELECT_POPULAR_FILMS = "SELECT f.*, m.mpa_rating_id, m.name AS mpa_name, " +
-            "m.description AS mpa_description " +
-            "FROM films AS f " +
-            "JOIN mpa_ratings AS m ON f.mpa_id = m.mpa_rating_id " +
-            "LEFT JOIN film_user_likes as l ON f.film_id = l.film_id " +
-            "GROUP BY f.film_id " +
-            "ORDER BY COUNT(l.user_id) DESC " +
-            "LIMIT ?";
-    public static final String SELECT_FILM_EXIST = "SELECT EXISTS(SELECT 1 FROM films WHERE film_id = ?)";
     public static final String UPDATE_FILM = "UPDATE films SET name = ?, description = ?, release_date = ?," +
             " duration = ?, mpa_id = ? WHERE film_id = ?";
     public static final String DELETE_LIKE_FILM = "DELETE FROM film_user_likes WHERE film_id = ? AND user_id = ?";
