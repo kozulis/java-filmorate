@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -15,10 +16,12 @@ import java.util.Collection;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FriendsService friendsService;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FriendsService friendsService) {
         this.userStorage = userStorage;
+        this.friendsService = friendsService;
     }
 
     public User create(User user) {
@@ -39,19 +42,23 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public void addFriend(Integer userId, Integer friendId) {
-        userStorage.addFriend(userId, friendId);
+        friendsService.addFriend(userId, friendId);
     }
 
+    @Transactional
     public void deleteFriend(Integer userId, Integer friendId) {
-        userStorage.deleteFriend(userId, friendId);
+        friendsService.deleteFriend(userId, friendId);
     }
 
-    public Collection<User> getFriends(Integer userId) {
-        return userStorage.getFriends(userId);
+    @Transactional
+    public Collection<User> getFriendsByUserId(Integer userId) {
+        return friendsService.getFriendsByUserId(userId);
     }
 
+    @Transactional
     public Collection<User> getCommonFriends(Integer userId, Integer otherId) {
-        return userStorage.getCommonFriends(userId, otherId);
+        return friendsService.getCommonFriends(userId, otherId);
     }
 }

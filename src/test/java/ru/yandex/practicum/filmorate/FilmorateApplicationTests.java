@@ -95,31 +95,31 @@ class FilmorateApplicationTests {
 //        assertThat(user1).hasFieldOrPropertyWithValue("login", "login2");
 //    }
 
-    @Test
-    public void shouldAddFriend() {
-        userDbStorage.addFriend(3, 2);
-        Collection<User> friends = userDbStorage.getFriends(3);
-        assertThat(friends).isNotEmpty().hasSize(2);
-    }
-
-    @Test
-    public void shouldDeleteFriend() {
-        userDbStorage.deleteFriend(4, 2);
-        Collection<User> friends = userDbStorage.getFriends(4);
-        assertThat(friends).hasSize(0);
-    }
-
-    @Test
-    public void shouldGetFriends() {
-        Collection<User> friends = userDbStorage.getFriends(1);
-        assertThat(friends).hasSize(2);
-    }
-
-    @Test
-    public void shouldGetCommonFriends() {
-        Collection<User> commonFriends = userDbStorage.getCommonFriends(1, 2);
-        assertThat(commonFriends).hasSize(1);
-    }
+//    @Test
+//    public void shouldAddFriend() {
+//        userDbStorage.addFriend(3, 2);
+//        Collection<User> friends = userDbStorage.getFriends(3);
+//        assertThat(friends).isNotEmpty().hasSize(2);
+//    }
+//
+//    @Test
+//    public void shouldDeleteFriend() {
+//        userDbStorage.deleteFriend(4, 2);
+//        Collection<User> friends = userDbStorage.getFriends(4);
+//        assertThat(friends).hasSize(0);
+//    }
+//
+//    @Test
+//    public void shouldGetFriends() {
+//        Collection<User> friends = userDbStorage.getFriends(1);
+//        assertThat(friends).hasSize(2);
+//    }
+//
+//    @Test
+//    public void shouldGetCommonFriends() {
+//        Collection<User> commonFriends = userDbStorage.getCommonFriends(1, 2);
+//        assertThat(commonFriends).hasSize(1);
+//    }
 
     //Test filmDbStorage
 

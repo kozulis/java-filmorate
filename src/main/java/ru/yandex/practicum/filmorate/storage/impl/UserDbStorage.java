@@ -8,7 +8,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.impl.sql.Constants;
@@ -76,48 +75,17 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    public Set<Integer> getFriendsIds(Integer userId) {
-        List<Integer> ids = jdbcTemplate.queryForList(Constants.SELECT_FRIENDS_ID, Integer.class, userId);
-        return new HashSet<>(ids);
-    }
-
-
-    @Override
-    public void addFriend(Integer userId, Integer friendId) {
-        checkUserNotFound(userId);
-        checkUserNotFound(friendId);
-        if (Objects.equals(userId, friendId)) {
-            log.error("Ошибка добавления в список друзей. Id пользователей не должны совпадать.");
-            throw new ValidationException("Id пользователей не должны совпадать.");
-        }
-        jdbcTemplate.update(Constants.INSERT_FRIEND, userId, friendId);
-    }
-
-    @Override
-    public void deleteFriend(Integer userId, Integer friendId) {
-        checkUserNotFound(userId);
-        checkUserNotFound(friendId);
-        jdbcTemplate.update(Constants.DELETE_FRIEND, userId, friendId);
-    }
-
-    @Override
-    public Collection<User> getFriends(Integer userId) {
-        checkUserNotFound(userId);
-        return jdbcTemplate.query(Constants.SELECT_FRIENDS, this::mapRowToUser, userId);
-    }
-
-    @Override
-    public Collection<User> getCommonFriends(Integer userId, Integer otherId) {
-        checkUserNotFound(userId);
-        checkUserNotFound(otherId);
-        return jdbcTemplate.query(Constants.SELECT_COMMON_FRIENDS, this::mapRowToUser, userId, otherId);
-    }
-
     public void deleteUser(Integer userId) {
         checkUserNotFound(userId);
         String sql = "DELETE FROM users WHERE user_id = ?;";
         jdbcTemplate.update(sql, userId);
         log.debug("Пользователь с id {} удален.", userId);
+    }
+
+
+    public Set<Integer> getFriendsIds(Integer userId) {
+        List<Integer> ids = jdbcTemplate.queryForList(Constants.SELECT_FRIENDS_ID, Integer.class, userId);
+        return new HashSet<>(ids);
     }
 
     private void checkUserNameNotEmpty(User user) {

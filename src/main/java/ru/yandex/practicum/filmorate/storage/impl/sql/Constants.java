@@ -13,6 +13,8 @@ public class Constants {
     public static final String SELECT_FRIENDS_ID = "SELECT friend_id FROM friends WHERE user_id = ? AND status_id = 1";
     public static final String SELECT_FRIENDS = "SELECT * FROM users WHERE user_id IN " +
             "(SELECT friend_id FROM friends WHERE user_id = ? AND status_id = 1)";
+    public static final String SELECT_FRIEND = "SELECT * FROM users AS u " +
+            "RIGHT JOIN friends AS fr ON u.user_id = fr.friend_id WHERE fr.user_id = ? AND fr.friend_id = ?";
     public static final String SELECT_COMMON_FRIENDS = "SELECT u.* FROM friends AS fr " +
             "JOIN users AS u ON fr.friend_id = u.user_id " +
             "WHERE fr.user_id = ? AND fr.friend_id IN " +
