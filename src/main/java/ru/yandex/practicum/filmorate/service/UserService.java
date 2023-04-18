@@ -49,6 +49,7 @@ public class UserService {
     public User getUserById(Integer userId) {
         User user = userStorage.getUserById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с id %d не найден", userId)));
+        user.setFriendIds(userStorage.getFriendsIds(user.getId()));
         return user;
     }
 

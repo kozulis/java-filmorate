@@ -60,8 +60,6 @@ public class UserDbStorage implements UserStorage {
     public Optional<User> getUserById(Integer userId) {
         try {
             User user = jdbcTemplate.queryForObject(Constants.SELECT_USER_BY_ID, this::mapRowToUser, userId);
-            //TODO убрать или добавить в другой метод сервиса
-            user.setFriendIds(getFriendsIds(user.getId()));
             return Optional.ofNullable(user);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -77,6 +75,7 @@ public class UserDbStorage implements UserStorage {
     }
 
 
+    @Override
     public Set<Integer> getFriendsIds(Integer userId) {
         List<Integer> ids = jdbcTemplate.queryForList(Constants.SELECT_FRIENDS_ID, Integer.class, userId);
         return new HashSet<>(ids);
