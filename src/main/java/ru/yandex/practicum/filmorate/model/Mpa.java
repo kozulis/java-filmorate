@@ -12,8 +12,5 @@ public class Mpa {
     private String name;
     private String description;
 
-    public Mpa(int id) {
-        this.id = id;
-    }
 }
 
