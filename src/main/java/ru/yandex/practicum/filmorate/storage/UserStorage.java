@@ -17,5 +17,5 @@ public interface UserStorage {
 
     Optional<User> getUserById(Integer userId);
 
-    void deleteUserById(Integer UserId);
+    void deleteUserById(Integer userId);
 }
