@@ -7,7 +7,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -18,7 +17,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -28,11 +26,8 @@ public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static final LocalDate BIRTHDAY_MOVIES = LocalDate.of(1895, 12, 28);
-
     @Override
     public Film create(Film film) {
-        checkFilmDate(film);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(Constants.INSERT_FILM, new String[]{"film_id"});
@@ -44,17 +39,12 @@ public class FilmDbStorage implements FilmStorage {
             return stmt;
         }, keyHolder);
         film.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
-
-        if (film.getGenres() != null) {
-            addGenresToFilm(film);
-        }
         return film;
     }
 
     @Override
     public Film update(Film film) {
         checkFilmNotFound(film.getId());
-        checkFilmDate(film);
         int updateFilm = jdbcTemplate.update(Constants.UPDATE_FILM, film.getName(), film.getDescription(),
                 film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getId());
         if (film.getGenres() == null || film.getGenres().isEmpty()) {
@@ -126,8 +116,9 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    //TODO добавлен такой же метод в genreDao, этот удалить после рефакторинга
     public void deleteGenresFromFilm(Film film) {
-        jdbcTemplate.update(Constants.DELETE_GENRE_FILM, film.getId());
+        jdbcTemplate.update(Constants.DELETE_FILM_GENRES, film.getId());
     }
 
     public void updateGenreOfFilm(Film film) {
@@ -135,17 +126,12 @@ public class FilmDbStorage implements FilmStorage {
         addGenresToFilm(film);
     }
 
+    //TODO добавлен такой же метод в генреДао. после рефакторинга удалить.
     private Collection<Genre> getFilmGenres(Integer filmId) {
-        return jdbcTemplate.query(Constants.SELECT_FILM_GENRES, this::mapRowToGenre, filmId);
+        return jdbcTemplate.query(Constants.SELECT_GENRE_BY_FILM, this::mapRowToGenre, filmId);
     }
 
-    private void checkFilmDate(Film film) {
-        if (film.getReleaseDate().isBefore(BIRTHDAY_MOVIES)) {
-            log.error("Дата релиза фильма не может быть раньше {} ", BIRTHDAY_MOVIES);
-            throw new ValidationException("Дата релиза фильма не может быть раньше 1895.12.28");
-        }
-    }
-
+    //TODO метод можно заменить методом поиска по id, обернув в Optional. удалить после рефакторинга
     private void checkFilmNotFound(int filmId) {
         if (Objects.equals(jdbcTemplate.queryForObject(Constants.SELECT_FILM_EXIST, Boolean.class, filmId), false)) {
             log.error("Фильм с id {} не найден.", filmId);

@@ -29,9 +29,6 @@ public class Constants {
             "VALUES (?, ?, ?, ?, ?)";
     public static final String INSERT_LIKE_TO_FILM = "INSERT INTO film_user_likes (film_id, user_id) VALUES (?, ?)";
     public static final String INSERT_GENRE_TO_FILM = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-    public static final String SELECT_FILM_GENRES = "SELECT * FROM genres AS g " +
-            "JOIN film_genres AS fg ON g.genre_id = fg.genre_id " +
-            "WHERE film_id = ?";
     public static final String SELECT_ALL_FILMS = "SELECT f.*, m.mpa_rating_id, m.name AS mpa_name, " +
             "m.description AS mpa_description " +
             "FROM films AS f " +
@@ -54,13 +51,16 @@ public class Constants {
     public static final String UPDATE_FILM = "UPDATE films SET name = ?, description = ?, release_date = ?," +
             " duration = ?, mpa_id = ? WHERE film_id = ?";
     public static final String DELETE_LIKE_FILM = "DELETE FROM film_user_likes WHERE film_id = ? AND user_id = ?";
-    public static final String DELETE_GENRE_FILM = "DELETE FROM film_genres WHERE film_id = ?";
 
     /**
      * Запросы для GenreDao
      */
 
     public static final String SELECT_GENRE_BY_ID = "SELECT * FROM genres WHERE genre_id = ?";
+    public static final String SELECT_GENRE_BY_FILM = "SELECT * FROM genres AS g " +
+            "JOIN film_genres AS fg ON g.genre_id = fg.genre_id WHERE fg.film_id = ?";
+    public static final String INSERT_FILM_GENRES = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
+    public static final String DELETE_FILM_GENRES = "DELETE FROM film_genres WHERE film_id = ?";
     public static final String SELECT_GENRES = "SELECT * FROM genres";
     public static final String SELECT_GENRE_EXIST = "SELECT EXISTS(SELECT 1 FROM genres WHERE genre_id = ?)";
 

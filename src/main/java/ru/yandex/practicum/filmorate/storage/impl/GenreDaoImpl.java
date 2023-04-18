@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -12,7 +13,9 @@ import ru.yandex.practicum.filmorate.storage.impl.sql.Constants;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +33,26 @@ public class GenreDaoImpl implements GenreDao {
     @Override
     public Collection<Genre> getAllGenres() {
         return jdbcTemplate.query(Constants.SELECT_GENRES, this::genreRowMapper);
+    }
+
+    @Override
+    public Optional<List<Genre>> findByFilmId(Integer filmId) {
+        try {
+            List<Genre> genreList = jdbcTemplate.query(Constants.SELECT_GENRE_BY_FILM, this::genreRowMapper, filmId);
+            return Optional.of(genreList);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void updateFilmGenres(Integer filmId, Integer genreId) {
+        jdbcTemplate.update(Constants.INSERT_FILM_GENRES, filmId, genreId);
+    }
+
+    @Override
+    public void deleteGenresByFilmId(Integer filmId) {
+        jdbcTemplate.update(Constants.DELETE_FILM_GENRES, filmId);
     }
 
     private void checkGenreNotFound(int genreId) {
