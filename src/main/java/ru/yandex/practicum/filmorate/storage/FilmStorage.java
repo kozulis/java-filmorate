@@ -13,7 +13,4 @@ public interface FilmStorage {
     Collection<Film> getAll();
 
     Optional<Film> getFilmById(Integer filmId);
-
-    Collection<Film> getMostPopularFilms(Integer count);
-
 }

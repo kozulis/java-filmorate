@@ -12,9 +12,8 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreDao;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -81,7 +80,11 @@ public class FilmService {
     }
 
     public Collection<Film> getMostPopularFilms(Integer count) {
-        return filmStorage.getMostPopularFilms(count);
+        List<Film> films = getAll().stream()
+                .sorted(Comparator.comparingInt(Film::getLikes).reversed())
+                .limit(count)
+                .collect(Collectors.toList());
+        return films;
     }
 
 

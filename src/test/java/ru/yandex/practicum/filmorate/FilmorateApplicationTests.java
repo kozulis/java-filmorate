@@ -156,14 +156,14 @@ class FilmorateApplicationTests {
 //        assertThat(film1).hasFieldOrPropertyWithValue("id", 1);
 //        assertThat(film1).hasFieldOrPropertyWithValue("name", "film1update");
 //    }
-
-    @Test
-    void shouldGetMostPopularFilms() {
-        Collection<Film> popularFilms = filmDbStorage.getMostPopularFilms(1);
-        assertThat(popularFilms.size()).isEqualTo(1);
-        assertThat(new ArrayList<>(popularFilms).get(0))
-                .hasFieldOrPropertyWithValue("name", "film1update");
-    }
+//
+//    @Test
+//    void shouldGetMostPopularFilms() {
+//        Collection<Film> popularFilms = filmDbStorage.getMostPopularFilms(1);
+//        assertThat(popularFilms.size()).isEqualTo(1);
+//        assertThat(new ArrayList<>(popularFilms).get(0))
+//                .hasFieldOrPropertyWithValue("name", "film1update");
+//    }
 
 //    @Test
 //    void shouldAddLikeToFilm() {

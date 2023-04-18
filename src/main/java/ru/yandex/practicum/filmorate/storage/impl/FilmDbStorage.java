@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.impl.sql.Constants;
@@ -72,26 +71,6 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    @Override
-    public Collection<Film> getMostPopularFilms(Integer count) {
-        List<Film> films = jdbcTemplate.query(Constants.SELECT_POPULAR_FILMS, this::mapRowToFilm, count);
-        for (Film film : films) {
-            film.setGenres(getFilmGenres(film.getId()));
-            film.setLikes(getFilmLikes(film.getId()));
-        }
-        return films;
-    }
-
-    //TODO добавлен такой же метод в genreDao, этот удалить после рефакторинга
-    private Collection<Genre> getFilmGenres(Integer filmId) {
-        return jdbcTemplate.query(Constants.SELECT_GENRE_BY_FILM, this::mapRowToGenre, filmId);
-    }
-
-    //TODO такой метод добавлен в лайксДао. Удалить после рефакторинга
-    public Integer getFilmLikes(Integer filmId) {
-        return jdbcTemplate.queryForObject(Constants.SELECT_LIKE_FILM, Integer.class, filmId);
-    }
-
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return new Film(resultSet.getInt("film_id"),
                 resultSet.getString("name"),
@@ -101,9 +80,5 @@ public class FilmDbStorage implements FilmStorage {
                 new Mpa(resultSet.getInt("mpa_rating_id"),
                         resultSet.getString("mpa_name"),
                         resultSet.getString("mpa_description")));
-    }
-
-    private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
-        return new Genre(resultSet.getInt("genre_id"), resultSet.getString("name"));
     }
 }
