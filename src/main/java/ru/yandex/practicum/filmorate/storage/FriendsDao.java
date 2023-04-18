@@ -10,7 +10,7 @@ public interface FriendsDao {
 
     void deleteFriend(Integer userId, Integer friendId);
 
-    Collection<User> getFriends(Integer userId);
+    Collection<User> getFriendsByUserId(Integer userId);
 
     Collection<User> getFriend(Integer userId, Integer friendId);
 

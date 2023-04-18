@@ -27,7 +27,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        checkUserNameNotEmpty(user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(Constants.INSERT_USER, new String[]{"user_id"});
@@ -43,8 +42,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        checkUserNotFound(user.getId());
-        checkUserNameNotEmpty(user);
         int updateUser = jdbcTemplate.update(Constants.UPDATE_USER, user.getLogin(), user.getName(), user.getEmail(),
                 user.getBirthday(), user.getId());
         if (updateUser == 0) {
@@ -56,18 +53,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getAll() {
-        List<User> users = jdbcTemplate.query(Constants.SELECT_ALL_USERS, this::mapRowToUser);
-        for (User user : users) {
-            user.setFriendIds(getFriendsIds(user.getId()));
-
-        }
-        return users;
+        return jdbcTemplate.query(Constants.SELECT_ALL_USERS, this::mapRowToUser);
     }
 
     @Override
     public Optional<User> getUserById(Integer userId) {
         try {
             User user = jdbcTemplate.queryForObject(Constants.SELECT_USER_BY_ID, this::mapRowToUser, userId);
+            //TODO убрать или добавить в другой метод сервиса
             user.setFriendIds(getFriendsIds(user.getId()));
             return Optional.ofNullable(user);
         } catch (EmptyResultDataAccessException e) {
@@ -75,8 +68,9 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    public void deleteUser(Integer userId) {
-        checkUserNotFound(userId);
+
+    @Override
+    public void deleteUserById(Integer userId) {
         String sql = "DELETE FROM users WHERE user_id = ?;";
         jdbcTemplate.update(sql, userId);
         log.debug("Пользователь с id {} удален.", userId);
@@ -86,20 +80,6 @@ public class UserDbStorage implements UserStorage {
     public Set<Integer> getFriendsIds(Integer userId) {
         List<Integer> ids = jdbcTemplate.queryForList(Constants.SELECT_FRIENDS_ID, Integer.class, userId);
         return new HashSet<>(ids);
-    }
-
-    private void checkUserNameNotEmpty(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-    }
-
-    private void checkUserNotFound(int userId) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM users WHERE user_id = ?)";
-        if (Objects.equals(jdbcTemplate.queryForObject(sql, Boolean.class, userId), false)) {
-            log.error("Пользователь с id {} не найден.", userId);
-            throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
