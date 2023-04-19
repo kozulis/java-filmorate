@@ -19,7 +19,10 @@ public class Constants {
             "JOIN users AS u ON fr.friend_id = u.user_id " +
             "WHERE fr.user_id = ? AND fr.friend_id IN " +
             "(SELECT friend_id FROM friends WHERE user_id = ?)";
-
+    public static final String DELETE_USER_BY_ID =
+            "DELETE FROM friends WHERE user_id = 1 OR friend_id = ?;" +
+            "DELETE FROM film_user_likes WHERE user_id = ?;" +
+            "DELETE FROM users WHERE user_id = ?";
     public static final String UPDATE_USER = "UPDATE users SET login = ?, name = ?, email = ?, birthday = ? WHERE user_id = ?";
     public static final String DELETE_FRIEND = "DELETE FROM friends WHERE user_id = ? AND friend_id = ? AND status_id = 1";
 

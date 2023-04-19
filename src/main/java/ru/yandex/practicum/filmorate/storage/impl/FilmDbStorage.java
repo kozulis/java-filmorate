@@ -67,6 +67,7 @@ public class FilmDbStorage implements FilmStorage {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(Constants.SELECT_FILM_BY_ID, this::mapRowToFilm, filmId));
         } catch (EmptyResultDataAccessException e) {
+            log.error("Фильм с id {} не найден.", filmId);
             return Optional.empty();
         }
     }

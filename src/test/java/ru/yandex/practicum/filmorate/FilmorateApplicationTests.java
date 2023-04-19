@@ -72,18 +72,15 @@ class FilmorateApplicationTests {
             .mpa(new Mpa(1, "G", "У фильма нет возрастных ограничений"))
             .build();
 
-    //Test userDbStorage
+    /**
+     * Test userDbStorage
+     */
 
     @Test
     public void shouldCreateUser() {
         userDbStorage.create(user);
-//        assertThat(userDbStorage.getUserById(user.getId())).isEqualTo(user);
-        User user1 = userDbStorage.getUserById(6).get();
-        User user2 = userDbStorage.getUserById(6).orElse(new User());
-        User user3 = userDbStorage.getUserById(6).orElseGet(User::new);
+        User user1 = userDbStorage.getUserById(6).orElse(new User());
         assertThat(user1).isEqualTo(user);
-        assertThat(user2).isEqualTo(user);
-        assertThat(user3).isEqualTo(user);
 
     }
 
@@ -136,7 +133,9 @@ class FilmorateApplicationTests {
         assertThat(commonFriends).hasSize(1);
     }
 
-    //Test filmDbStorage
+    /**
+     * Test filmDbStorage
+     */
 
     @Test
     void shouldCreateFilm() {
@@ -208,12 +207,14 @@ class FilmorateApplicationTests {
         assertThat(mpaList.size()).isEqualTo(5);
     }
 
-    //Test GenreDaoImpl
+    /**
+     *Test GenreDaoImpl
+     */
 
     @Test
     void shouldGetGenreFilmById() {
-        assertThat(genreDaoImpl.getGenreById(4))
-                .hasFieldOrPropertyWithValue("name", "Триллер");
+        Genre genre = genreDaoImpl.getGenreById(4).orElse(new Genre());
+        assertThat(genre.getName()).isEqualTo("Триллер");
     }
 
     @Test

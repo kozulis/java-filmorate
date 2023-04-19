@@ -62,14 +62,14 @@ public class UserDbStorage implements UserStorage {
             User user = jdbcTemplate.queryForObject(Constants.SELECT_USER_BY_ID, this::mapRowToUser, userId);
             return Optional.ofNullable(user);
         } catch (EmptyResultDataAccessException e) {
+            log.error("Пользователь с id {} не найден.", userId);
             return Optional.empty();
         }
     }
 
     @Override
     public void deleteUserById(Integer userId) {
-        String sql = "DELETE FROM users WHERE user_id = ?;";
-        jdbcTemplate.update(sql, userId);
+        jdbcTemplate.update(Constants.DELETE_USER_BY_ID, userId, userId, userId);
         log.debug("Пользователь с id {} удален.", userId);
     }
 
