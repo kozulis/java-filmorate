@@ -192,7 +192,9 @@ class FilmorateApplicationTests {
         assertThat(film2.getLikes()).isEqualTo(0);
     }
 
-    //Test MpaDaoImpl
+    /**
+     * Test MpaDaoImpl
+     */
 
     @Test
     void shouldGetMpaById() {
